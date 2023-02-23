@@ -21,7 +21,6 @@ class PostURLTests(TestCase):
             author=cls.user
         )
 
-
     def setUp(self):
         self.guest_client = Client()
         self.authorized_client = Client()
