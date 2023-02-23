@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -10,10 +11,17 @@ class PostPagesTests(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         # Создадим запись в БД
-        Post.objects.create(
-
-            text='Текст',
+        cls.user = User.objects.create(username='Author')
+        cls.group = Group.objects.create(
+            title='Тестовая группа',
             slug='test-slug',
+            description='Тестовое описание',
+        )
+
+        cls.post = Post.objects.create(
+            author=cls.user,
+            text='Тестовая запись',
+            group=cls.group,
         )
 
     def setUp(self):
@@ -23,17 +31,16 @@ class PostPagesTests(TestCase):
         self.authorized_client.force_login(self.user)
 
     def test_views_use_correct_template(self):
+        POSTS_DIR = 'posts/'
         templates_pages_names = {
-            reverse('posts:index'): 'index.html',
-            reverse('posts:group_slug',
-                    kwargs={'slug': self.group.slug}): 'group.html',
-            reverse('posts:new_post'): 'new_post.html',
+            reverse('posts:index'): f'{POSTS_DIR}index.html',
+            reverse('posts:group',
+                    kwargs={'slug': self.group.slug}): f'{POSTS_DIR}group_list.html',
+            reverse('posts:post_create'): f'{POSTS_DIR}create_post.html',
             reverse('posts:profile',
-                    kwargs={'username': self.user.username}): 'profile.html',
-            reverse('posts:post',
-                    kwargs={'username': self.user.username,
-                            'post_id': self.post.id}): 'post.html',
-            reverse('posts:follow_index'): 'follow.html',
+                    kwargs={'username': self.user.username}): f'{POSTS_DIR}profile.html',
+            reverse('posts:post_detail',
+                    kwargs={'post_id': self.post.id}): f'{POSTS_DIR}post_detail.html',
         }
         for reverse_name, template in templates_pages_names.items():
             with self.subTest(reverse_name=reverse_name):
@@ -43,8 +50,8 @@ class PostPagesTests(TestCase):
         # Проверка словаря контекста главной страницы (в нём передаётся форма)
 
     def test_home_page_show_correct_context(self):
-        """Шаблон home сформирован с правильным контекстом."""
-        response = self.authorized_client.get(reverse('deals:index'))
+        """Шаблон home_page сформирован с правильным контекстом."""
+        response = self.authorized_client.get(reverse('posts:index'))
         # Словарь ожидаемых типов полей формы:
         # указываем, объектами какого класса должны быть поля формы
         form_fields = {
@@ -64,10 +71,9 @@ class PostPagesTests(TestCase):
                 self.assertIsInstance(form_field, expected)
 
 
-
     def test_task_list_page_show_correct_context(self):
         """Шаблон group_list сформирован с правильным контекстом."""
-        response = self.authorized_client.get(reverse('deals:group_list'))
+        response = self.authorized_client.get(reverse('posts:group_list'))
         # Взяли первый элемент из списка и проверили, что его содержание
         # совпадает с ожидаемым
         first_object = response.context['object_list'][0]
@@ -84,7 +90,7 @@ class PostPagesTests(TestCase):
     def test_task_detail_pages_show_correct_context(self):
         """Шаблон post_detail сформирован с правильным контекстом."""
         response = (self.authorized_client.
-                    get(reverse('deals:post_detail', kwargs={'slug': 'test-slug'})))
+                    get(reverse('posts:post_detail', kwargs={'slug': 'test-slug'})))
         self.assertEqual(response.context.get('task').title, 'Заголовок')
         self.assertEqual(response.context.get('task').text, 'Текст')
         self.assertEqual(response.context.get('task').slug, 'test-slug')
