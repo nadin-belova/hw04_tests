@@ -19,6 +19,7 @@ class PostModelTest(TestCase):
             author=cls.user,
             text='Тестовая запись',
         )
+
     def test_models_have_correct_object_names(self):
         """Проверяем, что у моделей корректно работает __str__."""
         post = PostModelTest.post
