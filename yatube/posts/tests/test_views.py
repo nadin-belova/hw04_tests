@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
+from django.core.paginator import Page
 
 from ..models import Group, Post
 
@@ -51,24 +52,21 @@ class PostPagesTests(TestCase):
 
     def test_home_page_show_correct_context(self):
         """Шаблон home_page сформирован с правильным контекстом."""
-        response = self.authorized_client.get(reverse('posts:index'))
-        # Словарь ожидаемых типов полей формы:
-        # указываем, объектами какого класса должны быть поля формы
-        form_fields = {
-            'title': forms.fields.CharField,
-            # При создании формы поля модели типа TextField
-            # преобразуются в CharField с виджетом forms.Textarea
-            'text': forms.fields.CharField,
-            'slug': forms.fields.SlugField,
-        }
+        response = (self.authorized_client.
+            get(reverse('posts:index')))
+        
+        # Проверяем, что типы данных в словаре context соответствуют ожиданиям
+        context_fields = {          
+            'page_obj': Page,
+        }        
 
         # Проверяем, что типы полей формы в словаре context соответствуют ожиданиям
-        for value, expected in form_fields.items():
+        for value, expected in context_fields.items():
             with self.subTest(value=value):
-                form_field = response.context.get('form').fields.get(value)
-                # Проверяет, что поле формы является экземпляром
+                context_field = response.context.get(value)
+                # Проверяет, что context_field является экземпляром
                 # указанного класса
-                self.assertIsInstance(form_field, expected)
+                self.assertIsInstance(context_field, expected)
 
 
     def test_task_list_page_show_correct_context(self):
@@ -95,16 +93,16 @@ class PostPagesTests(TestCase):
         self.assertEqual(response.context.get('task').text, 'Текст')
         self.assertEqual(response.context.get('task').slug, 'test-slug')
 
-    class PaginatorViewsTest(TestCase):
-        # Здесь создаются фикстуры: клиент и 13 тестовых записей.
-        ...
+class PaginatorViewsTest(TestCase):
+    # Здесь создаются фикстуры: клиент и 13 тестовых записей.
+    ...
 
-        def test_first_page_contains_ten_records(self):
-            response = self.client.get(reverse('index'))
-            # Проверка: количество постов на первой странице равно 10.
-            self.assertEqual(len(response.context['group_list']), 10)
+    def test_first_page_contains_ten_records(self):
+        response = self.client.get(reverse('index'))
+        # Проверка: количество постов на первой странице равно 10.
+        self.assertEqual(len(response.context['group_list']), 10)
 
-        def test_second_page_contains_three_records(self):
-            # Проверка: на второй странице должно быть три поста.
-            response = self.client.get(reverse('index') + '?page=2')
-            self.assertEqual(len(response.context['group_list']), 3)
+    def test_second_page_contains_three_records(self):
+        # Проверка: на второй странице должно быть три поста.
+        response = self.client.get(reverse('index') + '?page=2')
+        self.assertEqual(len(response.context['group_list']), 3)
