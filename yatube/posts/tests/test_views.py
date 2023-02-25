@@ -1,10 +1,10 @@
-from django import forms
+#from django import forms
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
 from django.core.paginator import Page
-
 from ..models import Group, Post
+
 
 User = get_user_model()
 class PostPagesTests(TestCase):
@@ -18,7 +18,6 @@ class PostPagesTests(TestCase):
             slug='test-slug',
             description='Тестовое описание',
         )
-
         cls.post = Post.objects.create(
             author=cls.user,
             text='Тестовая запись',
@@ -30,6 +29,7 @@ class PostPagesTests(TestCase):
         self.user = User.objects.create_user(username='StasBasov')
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
+
 
     def test_views_use_correct_template(self):
         POSTS_DIR = 'posts/'
@@ -49,6 +49,7 @@ class PostPagesTests(TestCase):
                 self.assertTemplateUsed(response, template)
 
         # Проверка словаря контекста главной страницы (в нём передаётся форма)
+
 
     def test_home_page_show_correct_context(self):
         """Шаблон home_page сформирован с правильным контекстом."""
@@ -88,10 +89,12 @@ class PostPagesTests(TestCase):
     def test_task_detail_pages_show_correct_context(self):
         """Шаблон post_detail сформирован с правильным контекстом."""
         response = (self.authorized_client.
-                    get(reverse('posts:post_detail', kwargs={'slug': 'test-slug'})))
+                    get(reverse('posts:post_detail', 
+                                kwargs={'slug': 'test-slug'})))
         self.assertEqual(response.context.get('task').title, 'Заголовок')
         self.assertEqual(response.context.get('task').text, 'Текст')
         self.assertEqual(response.context.get('task').slug, 'test-slug')
+
 
 class PaginatorViewsTest(TestCase):
     # Здесь создаются фикстуры: клиент и 13 тестовых записей.
