@@ -1,9 +1,8 @@
-from django.shortcuts import render, get_object_or_404
-from posts.forms import PostForm
-from .models import Group, Post, User
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
-from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
+from .models import Group, Post, User
+from posts.forms import PostForm
 
 
 def paginator(request, posts):
