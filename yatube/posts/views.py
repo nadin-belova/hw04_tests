@@ -6,11 +6,11 @@ from posts.forms import PostForm
 
 
 def paginator(request, posts):
-    SELECT_LIMIT = 10
-    paginator = Paginator(posts, SELECT_LIMIT)
+    paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return page_obj
+
 
 
 def index(request):
