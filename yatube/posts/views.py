@@ -12,7 +12,6 @@ def paginator(request, posts):
     return page_obj
 
 
-
 def index(request):
     post_list = Post.objects.all().order_by('-pub_date')
     page_obj = paginator(request, post_list)
