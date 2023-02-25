@@ -6,7 +6,9 @@ from ..models import Group, Post
 
 User = get_user_model()
 
+
 class PostURLTests(TestCase):
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -48,7 +50,7 @@ class PostURLTests(TestCase):
     #
 
     class MyTestCase(TestCase):
-        #запрос к несуществующей странице вернёт ошибку 404.
+        # запрос к несуществующей странице вернёт ошибку 404.
         def test_page_not_found(self):
             url = '/unexsisting_page/'
             response = self.client.get(url)
