@@ -1,4 +1,4 @@
-#from django import forms
+# from django import forms
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -7,6 +7,8 @@ from ..models import Group, Post
 
 
 User = get_user_model()
+
+
 class PostPagesTests(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -30,18 +32,20 @@ class PostPagesTests(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
-
     def test_views_use_correct_template(self):
         POSTS_DIR = 'posts/'
         templates_pages_names = {
             reverse('posts:index'): f'{POSTS_DIR}index.html',
             reverse('posts:group',
-                    kwargs={'slug': self.group.slug}): f'{POSTS_DIR}group_list.html',
+                    kwargs={'slug':
+                            self.group.slug}): f'{POSTS_DIR}group_list.html',
             reverse('posts:post_create'): f'{POSTS_DIR}create_post.html',
             reverse('posts:profile',
-                    kwargs={'username': self.user.username}): f'{POSTS_DIR}profile.html',
+                    kwargs={'username':
+                            self.user.username}): f'{POSTS_DIR}profile.html',
             reverse('posts:post_detail',
-                    kwargs={'post_id': self.post.id}): f'{POSTS_DIR}post_detail.html',
+                    kwargs={'post_id':
+                            self.post.id}): f'{POSTS_DIR}post_detail.html',
         }
         for reverse_name, template in templates_pages_names.items():
             with self.subTest(reverse_name=reverse_name):
@@ -50,25 +54,21 @@ class PostPagesTests(TestCase):
 
         # Проверка словаря контекста главной страницы (в нём передаётся форма)
 
-
     def test_home_page_show_correct_context(self):
         """Шаблон home_page сформирован с правильным контекстом."""
-        response = (self.authorized_client.
-            get(reverse('posts:index')))
-        
+        response = (self.authorized_client. get(reverse('posts:index')))
         # Проверяем, что типы данных в словаре context соответствуют ожиданиям
-        context_fields = {          
+        context_fields = {
             'page_obj': Page,
-        }        
-
-        # Проверяем, что типы полей формы в словаре context соответствуют ожиданиям
+        }
+        # Проверяем, что типы полей формы в словаре context
+        #  соответствуют ожиданиям
         for value, expected in context_fields.items():
             with self.subTest(value=value):
                 context_field = response.context.get(value)
                 # Проверяет, что context_field является экземпляром
                 # указанного класса
                 self.assertIsInstance(context_field, expected)
-
 
     def test_task_list_page_show_correct_context(self):
         """Шаблон group_list сформирован с правильным контекстом."""
@@ -88,9 +88,7 @@ class PostPagesTests(TestCase):
 
     def test_task_detail_pages_show_correct_context(self):
         """Шаблон post_detail сформирован с правильным контекстом."""
-        response = (self.authorized_client.
-                    get(reverse('posts:post_detail', 
-                                kwargs={'slug': 'test-slug'})))
+        response = self.authorized_client. kwargs = {'slug': 'test-slug'}
         self.assertEqual(response.context.get('task').title, 'Заголовок')
         self.assertEqual(response.context.get('task').text, 'Текст')
         self.assertEqual(response.context.get('task').slug, 'test-slug')

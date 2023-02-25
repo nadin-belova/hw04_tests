@@ -1,15 +1,14 @@
 import shutil
 import tempfile
 from http import HTTPStatus
-
 from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME, get_user_model
-from django.core.files.uploadedfile import SimpleUploadedFile
+# from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
-
 from ..forms import PostForm
-from ..models import  Group, Post
+from ..models import Group, Post
+
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
@@ -61,11 +60,9 @@ class PostFormTests(TestCase):
         #     name='new_small.gif',
         #     content=bytes_image,
         #     #content_type='image/gif'
-        
         form_data = {
             'text': self.post.text,
             'group': self.group.pk,
-           # 'image': image,
         }
         response = self.authorized_client.post(
             reverse('posts:post_create'),
@@ -83,7 +80,6 @@ class PostFormTests(TestCase):
             (post.author, self.post.author),
             (post.text, self.post.text),
             (post.group, self.group),
-            
         )
         for new_post, expected in check_post_fields:
             with self.subTest(new_post=expected):
@@ -111,7 +107,6 @@ class PostFormTests(TestCase):
         #     name='new_small.gif',
         #     content=bytes_image,
         #     content_type='image/gif'
-        
         group_2 = Group.objects.create(
             title='Новая группа',
             slug='new-slug',
@@ -120,7 +115,6 @@ class PostFormTests(TestCase):
         form_data = {
             'text': 'Новый текст',
             'group': group_2.pk,
-           # 'image': image,
         }
         response = self.authorized_client.post(
             reverse('posts:post_edit', args=(self.post.id,)),
@@ -138,7 +132,7 @@ class PostFormTests(TestCase):
             (post.author, self.post.author),
             (post.text, post.text),
             (post.group, post.group),
-            #(post.image, post.image),
+            # (post.image, post.image),
         )
         for new_post, expected in check_edited_post_fields:
             with self.subTest(new_post=expected):
@@ -183,4 +177,3 @@ class PostFormTests(TestCase):
             f'{login}?{REDIRECT_FIELD_NAME}={reverse_name}',
             HTTPStatus.FOUND
         )
-
