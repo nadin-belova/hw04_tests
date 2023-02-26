@@ -1,22 +1,47 @@
 {% extends 'base.html' %}
 
+<!--{% block title %}-->
+<!--  <title> Новый пост </title>-->
+<!--{% endblock title%}-->
+
 {% block content %}
 
-{% block title %}
-{% if is_edit %}
-  <title> Редактировать пост</title>
-{% else %}
- <title> Добавить запись (пост)</title>
-{% endif %}  
-{% endblock %}
+<!--    <div class="container py-5">-->
+<!--      <div class="row justify-content-center">-->
+<!--        <div class="col-md-8 p-5">-->
+<!--          <div class="card">-->
+<!--            <div class="card-header">-->
 
+<!--              {% if is_edit %}Редактировать пост{% else %}Новый пост{% endif %}-->
+<!--            </div>-->
+<!--            <div class="card-body">-->
+
+<!--              <form method="post">-->
+
+<!--                {% csrf_token %}-->
+<!--                  <span class="required text-danger" >*</span>-->
+<!--                {{ form.as_p }}-->
+
+<!--                <button type="submit" class="btn btn-primary">-->
+<!--                  {% if is_edit %} Сохранить {% else %} Добавить-->
+<!--                  {% endif %}-->
+<!--                </button>-->
+<!--              </form>-->
+
+<!--             </form>-->
+<!--            </div>-->
+
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
 <div class="container py-5">
     <div class="row justify-content-center">
       <div class="col-md-8 p-5">
         <div class="card">
           <div class="card-header">
             {% if is_edit %}
-              Редактировать пост
+              Редактировать порт
             {% else %}
               Новый пост
             {% endif %}
@@ -42,7 +67,7 @@
                   action="{% url 'posts:post_edit' post_id %}">
             {% else %}
             <form method="post"
-                  action="{% url 'posts:post_create' %}">
+                  action="{% url 'posts:create_post' %}">
             {% endif %}
               {% csrf_token %}
               {% for field in form %}

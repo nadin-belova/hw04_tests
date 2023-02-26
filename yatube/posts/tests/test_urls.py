@@ -13,20 +13,20 @@ class PostURLTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user = User.objects.create_user(username='auth')
+        cls.user = User.objects.create_user(username="auth")
         cls.group = Group.objects.create(
-            title='Тестовая группа',
-            slug='test_slug',
-            description='Тестовое описание',
+            title="Тестовая группа",
+            slug="test_slug",
+            description="Тестовое описание",
         )
         cls.post = Post.objects.create(
             author=cls.user,
-            text='Тестовый пост',
+            text="Тестовый пост",
         )
 
     def setUp(self):
         # Создаем пользователя
-        self.user = User.objects.create_user(username='HasNoName')
+        self.user = User.objects.create_user(username="HasNoName")
 
         # Создаем неавторизованный клиент
         self.guest_client = Client()
@@ -51,12 +51,12 @@ class PostURLTests(TestCase):
         """URL-адрес использует соответствующий шаблон."""
 
         data = {
-            '/': 'posts/index.html',
-            '/group/test_slug/': 'posts/group_list.html',
-            '/profile/auth/': 'posts/profile.html',
-            '/posts/1/': 'posts/post_detail.html',
-            '/posts/1/edit/': 'posts/create_post.html',
-            '/create/': 'posts/create_post.html',
+            "/": "posts/index.html",
+            "/group/test_slug/": "posts/group_list.html",
+            "/profile/auth/": "posts/profile.html",
+            "/posts/1/": "posts/post_detail.html",
+            "/posts/1/edit/": "posts/create_post.html",
+            "/create/": "posts/create_post.html",
         }
 
         for address, template in data.items():
@@ -69,12 +69,12 @@ class PostURLTests(TestCase):
 
         # Очерёдность проверки: неавторизованный, авторизованный, автор
         data = {
-            '/': [hst.OK, hst.OK, hst.OK],
-            '/group/test_slug/': [hst.OK, hst.OK, hst.OK],
-            '/profile/auth/': [hst.OK, hst.OK, hst.OK],
-            '/posts/1/': [hst.OK, hst.OK, hst.OK],
-            '/posts/1/edit/': [hst.FOUND, hst.FOUND, hst.OK],
-            '/create/': [hst.FOUND, hst.OK, hst.OK],
+            "/": [hst.OK, hst.OK, hst.OK],
+            "/group/test_slug/": [hst.OK, hst.OK, hst.OK],
+            "/profile/auth/": [hst.OK, hst.OK, hst.OK],
+            "/posts/1/": [hst.OK, hst.OK, hst.OK],
+            "/posts/1/edit/": [hst.FOUND, hst.FOUND, hst.OK],
+            "/create/": [hst.FOUND, hst.OK, hst.OK],
         }
 
         for address, statuses in data.items():
@@ -84,32 +84,37 @@ class PostURLTests(TestCase):
                     self.assertEqual(response.status_code, status)
 
     def test_urls_redirect(self):
-        """URL-адрес корректно перенаправляет в
-        зависимости от уровня доступа."""
+        """
+        URL-адрес корректно перенаправляет в зависимости от уровня доступа.
+        """
 
         # Очерёдность проверки: неавторизованный, авторизованный, автор
         data = {
-            '/': ['', '', ''],
-            '/group/test_slug/': ['', '', ''],
-            '/profile/auth/': ['', '', ''],
-            '/posts/1/': ['', '', ''],
-            '/posts/1/edit/':
-            ['/auth/login/?next=/posts/1/edit/', '/posts/1/', ''],
-            '/create/': ['/auth/login/?next=/create/', '', ''],
+            "/": ["", "", ""],
+            "/group/test_slug/": ["", "", ""],
+            "/profile/auth/": ["", "", ""],
+            "/posts/1/": ["", "", ""],
+            "/posts/1/edit/": [
+                "/auth/login/?next=/posts/1/edit/",
+                "/posts/1/",
+                ""
+            ],
+            "/create/": ["/auth/login/?next=/create/", "", ""],
         }
 
         for address, redirect_addresses in data.items():
-            for redirect_address, client in zip(
-                    redirect_addresses,
-                    self.clients):
-
-                with self.subTest(address=address,
-                                  redirect_address=redirect_address):
+            addrs_clnts_zip = zip(redirect_addresses, self.clients)
+            for redirect_address, client in addrs_clnts_zip:
+                message = dict(
+                    address=address,
+                    redirect_address=redirect_address
+                )
+                with self.subTest(message):
                     if redirect_address:
                         response = client.get(address)
                         self.assertRedirects(response, redirect_address)
 
     def test_404_page(self):
         # Проверяем, что запрос к несуществующей странице вернёт ошибку 404
-        response = self.guest_client.get('/unexisting_page/')
+        response = self.guest_client.get("/unexisting_page/")
         self.assertEqual(response.status_code, 404)
