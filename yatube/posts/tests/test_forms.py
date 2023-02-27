@@ -35,6 +35,7 @@ class PostCreateFormTests(TestCase):
         self.authorized_client.post(
             reverse("posts:create_post"), data=form_data, follow=True
         )
+
         self.assertEqual(Post.objects.count(), posts_count + 1)
 
         # Проверяем, что создалась запись с заданным текстом

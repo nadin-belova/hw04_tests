@@ -14,8 +14,6 @@ class PostPageTests(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = User.objects.create_user("auth")
-        # User.objects.create_user('reader')
-        # User.objects.create_user('author')
         cls.group = Group.objects.create(
             title="Тестовая группа",
             slug="test_slug",
@@ -32,40 +30,31 @@ class PostPageTests(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(PostPageTests.user)
 
-    # Проверяем используемые шаблоны
-    def test_pages_uses_correct_template(self):
-        """URL-адрес использует соответствующий шаблон."""
+    def test_page_authorized_uses_correct_template(self):
+        """Проверка корректности адреса 'name' функции path() и формируемой по
+        этому адресу странице html"""
 
-        # Собираем в словарь пары "имя_html_шаблона: reverse(name)"
-        templates_pages_names = [
-            ("posts/index.html", reverse("posts:index")),
-            (
-                "posts/group_list.html",
-                reverse("posts:group_list", kwargs={"slug": self.group.slug}),
-            ),
-            (
-                "posts/profile.html",
-                reverse(
-                    "posts:profile",
-                    kwargs={"username": self.user.get_username()}
-                ),
-            ),
-            (
-                "posts/post_detail.html",
-                reverse("posts:post_detail", kwargs={"post_id": self.post.id}),
-            ),
-            (
-                "posts/create_post.html",
-                reverse("posts:post_edit", kwargs={"post_id": self.post.id}),
-            ),
-            ("posts/create_post.html", reverse("posts:create_post")),
+        urls = [
+            reverse('posts:index'),
+            reverse('posts:group_list', kwargs={'slug': self.group.slug}),
+            reverse('posts:profile', kwargs={'username': self.user.username}),
+            reverse('posts:post_detail', kwargs={'post_id': self.post.id}),
+            reverse('posts:post_edit', kwargs={'post_id': self.post.id}),
+            reverse('posts:post_create'),
         ]
 
-        # Проверяем, что при обращении к name вызывается
-        # соответствующий HTML-шаблон
-        for template, reverse_name in templates_pages_names:
-            with self.subTest(reverse_name=reverse_name):
-                response = self.authorized_client.get(reverse_name)
+        templates = [
+            'posts/index.html',
+            'posts/group_list.html',
+            'posts/profile.html',
+            'posts/post_detail.html',
+            'posts/create_post.html',
+            'posts/create_post.html',
+        ]
+
+        for url, template in zip(urls, templates):
+            with self.subTest(url=url):
+                response = self.authorized_client.get(url)
                 self.assertTemplateUsed(response, template)
 
     def test_index_page_correct_context(self):
@@ -154,7 +143,7 @@ class PostPageTests(TestCase):
         )
         self.assertEqual(first_object.text, self.post.text)
 
-        self.user_2 = User.objects.create_user(username="user_2")
+        self.user_2 = User.objects.create_user('user_2')
 
         self.post_2 = Post.objects.create(
             author=self.user_2,
