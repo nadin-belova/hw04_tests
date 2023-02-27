@@ -10,21 +10,18 @@ User = get_user_model()
 
 
 class PostURLTests(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.user = User.objects.create_user("auth")
-        cls.group = Group.objects.create(slug="slug")
-        cls.post = Post.objects.create(author=cls.user)
-
     def setUp(self):
-        self.user = User.objects.create_user(username="HasNoName")
+        self.user_auth = User.objects.create_user("auth")
+        self.group = Group.objects.create(slug="slug")
+        self.post = Post.objects.create(author=self.user_auth)
+
+        self.user = User.objects.create_user("HasNoName")
         self.guest_client = Client()
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
         self.author_client = Client()
         # Авторизуем автора
-        self.author_client.force_login(PostURLTests.user)
+        self.author_client.force_login(self.user_auth)
 
         self.clients = [
             self.guest_client,
