@@ -28,7 +28,7 @@ class PostPageTests(TestCase):
 
     def setUp(self):
         self.authorized_client = Client()
-        self.authorized_client.force_login(PostPageTests.user)
+        self.authorized_client.force_login(self.user)
 
     def test_page_authorized_uses_correct_template(self):
         """Корректен ли адрес 'name' функции path() и формируемой по
@@ -61,17 +61,17 @@ class PostPageTests(TestCase):
         """Шаблон index.html сформирован с правильным контекстом."""
         response = self.authorized_client.get(reverse("posts:index"))
         first_object = response.context["page_obj"][0]
-        self.assertEqual(first_object.group.title, PostPageTests.group.title)
-        self.assertEqual(first_object.group.slug, PostPageTests.group.slug)
+        self.assertEqual(first_object.group.title, self.group.title)
+        self.assertEqual(first_object.group.slug, self.group.slug)
         self.assertEqual(
-            first_object.group.description, PostPageTests.group.description
+            first_object.group.description, self.group.description
         )
 
         self.assertEqual(
             first_object.author.username,
-            PostPageTests.post.author.get_username()
+            self.post.author.get_username()
         )
-        self.assertEqual(first_object.text, PostPageTests.post.text)
+        self.assertEqual(first_object.text, self.post.text)
 
     # Словарь context страницы /group_list
     # содержит список постов отфильтрованных по группе
