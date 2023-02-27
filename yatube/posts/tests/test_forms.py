@@ -9,11 +9,7 @@ class PostCreateFormTests(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = User.objects.create_user("auth")
-        cls.group = Group.objects.create(
-            title="Тестовая группа",
-            slug="test_slug",
-            description="Тестовое описание",
-        )
+        cls.group = Group.objects.create(slug="test_slug")
         cls.post = Post.objects.create(
             author=cls.user,
             text="Тестовый пост",
