@@ -27,12 +27,12 @@ class PostCreateFormTests(TestCase):
             "text": self.post.text * 2,
             "goup": self.group,
         }
-        posts_count = Post.objects.count()
+
         self.authorized_client.post(
             reverse("posts:create_post"), data=form_data, follow=True
         )
 
-        self.assertEqual(Post.objects.count(), posts_count + 1)
+        self.assertEqual(Post.objects.count(), 2)
 
         # Создалась ли запись с заданным текстом
         self.assertTrue(
