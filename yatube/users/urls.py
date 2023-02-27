@@ -40,5 +40,5 @@ urlpatterns = [
         ),
         name="password_change_done",
     ),
-    
+
 ]
