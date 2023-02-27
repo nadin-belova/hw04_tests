@@ -15,14 +15,14 @@ class PostPageTests(TestCase):
         super().setUpClass()
         cls.user = User.objects.create_user("auth")
         cls.group = Group.objects.create(
-            title="Тестовая группа",
-            slug="test_slug",
-            description="Тестовое описание",
+            title="группа",
+            slug="slug",
+            description="описание",
         )
 
         cls.post = Post.objects.create(
             author=cls.user,
-            text="Тестовый пост",
+            text="пост",
             group=cls.group,
         )
 
@@ -96,14 +96,14 @@ class PostPageTests(TestCase):
         self.assertEqual(first_object.text, self.post.text)
 
         self.group_2 = Group.objects.create(
-            title="Тестовая группа 2",
-            slug="test_slug_2",
-            description="Тестовое описание группы 2",
+            title="группа 2",
+            slug="slug_2",
+            description="описание группы 2",
         )
 
         self.post_2 = Post.objects.create(
             author=self.user,
-            text="Тестовый пост 2",
+            text="пост 2",
             group=self.group_2,
         )
 
@@ -147,7 +147,7 @@ class PostPageTests(TestCase):
 
         self.post_2 = Post.objects.create(
             author=self.user_2,
-            text="Тестовый пост 2",
+            text="пост 2",
         )
 
         response = self.authorized_client.get(
@@ -219,16 +219,16 @@ class PaginatorViewsTest(TestCase):
         cls.user = User.objects.create_user("auth")
 
         cls.group = Group.objects.create(
-            title="Тестовая группа",
-            slug="test_slug",
-            description="Тестовое описание",
+            title="группа",
+            slug="slug",
+            description="описание",
         )
 
         cls.posts = []
         for _ in range(cls.ALL_POSTS_COUNT):
             post = Post.objects.create(
                 author=cls.user,
-                text="Тестовый пост",
+                text="пост",
                 group=cls.group,
             )
             cls.posts.append(post)

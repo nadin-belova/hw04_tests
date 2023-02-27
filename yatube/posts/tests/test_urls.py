@@ -15,13 +15,13 @@ class PostURLTests(TestCase):
         super().setUpClass()
         cls.user = User.objects.create_user("auth")
         cls.group = Group.objects.create(
-            title="Тестовая группа",
-            slug="test_slug",
-            description="Тестовое описание",
+            title="группа",
+            slug="slug",
+            description="описание",
         )
         cls.post = Post.objects.create(
             author=cls.user,
-            text="Тестовый пост",
+            text="пост",
         )
 
     def setUp(self):
@@ -44,7 +44,7 @@ class PostURLTests(TestCase):
 
         data = {
             "/": "posts/index.html",
-            "/group/test_slug/": "posts/group_list.html",
+            "/group/slug/": "posts/group_list.html",
             "/profile/auth/": "posts/profile.html",
             "/posts/1/": "posts/post_detail.html",
             "/posts/1/edit/": "posts/create_post.html",
@@ -62,7 +62,7 @@ class PostURLTests(TestCase):
         # Очерёдность проверки: неавторизованный, авторизованный, автор
         data = {
             "/": [hst.OK, hst.OK, hst.OK],
-            "/group/test_slug/": [hst.OK, hst.OK, hst.OK],
+            "/group/slug/": [hst.OK, hst.OK, hst.OK],
             "/profile/auth/": [hst.OK, hst.OK, hst.OK],
             "/posts/1/": [hst.OK, hst.OK, hst.OK],
             "/posts/1/edit/": [hst.FOUND, hst.FOUND, hst.OK],
@@ -83,7 +83,7 @@ class PostURLTests(TestCase):
         # Очерёдность проверки: неавторизованный, авторизованный, автор
         data = {
             "/": ["", "", ""],
-            "/group/test_slug/": ["", "", ""],
+            "/group/slug/": ["", "", ""],
             "/profile/auth/": ["", "", ""],
             "/posts/1/": ["", "", ""],
             "/posts/1/edit/": [
