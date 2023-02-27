@@ -25,18 +25,10 @@ class PostURLTests(TestCase):
         )
 
     def setUp(self):
-        # Создаем пользователя
         self.user = User.objects.create_user(username="HasNoName")
-
-        # Создаем неавторизованный клиент
         self.guest_client = Client()
-
-        # Создаем авторизованный клиент
         self.authorized_client = Client()
-        # Авторизуем пользователя
         self.authorized_client.force_login(self.user)
-
-        # Создаем авторский клиент
         self.author_client = Client()
         # Авторизуем автора
         self.author_client.force_login(PostURLTests.user)
@@ -115,6 +107,5 @@ class PostURLTests(TestCase):
                         self.assertRedirects(response, redirect_address)
 
     def test_404_page(self):
-        # Проверяем, что запрос к несуществующей странице вернёт ошибку 404
         response = self.guest_client.get("/unexisting_page/")
         self.assertEqual(response.status_code, 404)

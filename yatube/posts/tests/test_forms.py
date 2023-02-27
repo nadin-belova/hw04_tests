@@ -8,8 +8,6 @@ class PostCreateFormTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-
-        # Создаем запись в базе данных для проверки сушествующего slug
         cls.user = User.objects.create_user(username="auth")
         cls.group = Group.objects.create(
             title="Тестовая группа",
@@ -21,14 +19,10 @@ class PostCreateFormTests(TestCase):
             text="Тестовый пост",
             group=cls.group,
         )
-
-        # Создаем форму, если нужна проверка атрибутов
         cls.form = PostForm()
 
     def setUp(self):
-        # Создаем авторизованный клиент
         self.authorized_client = Client()
-        # Авторизуем пользователя
         self.authorized_client.force_login(self.user)
 
     def test_create_post(self):
@@ -37,15 +31,10 @@ class PostCreateFormTests(TestCase):
             "text": self.post.text * 2,
             "goup": self.group,
         }
-
-        # Подсчитаем количество записей в Post
         posts_count = Post.objects.count()
-
-        # Отправляем POST-запрос
         self.authorized_client.post(
             reverse("posts:create_post"), data=form_data, follow=True
         )
-        # # Проверяем, увеличилось ли число постов
         self.assertEqual(Post.objects.count(), posts_count + 1)
 
         # Проверяем, что создалась запись с заданным текстом

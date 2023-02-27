@@ -13,12 +13,15 @@ class PostPageTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user = User.objects.create_user(username="auth")
+        cls.user = User.objects.create_user("auth")
+        # User.objects.create_user('reader')
+        # User.objects.create_user('author')
         cls.group = Group.objects.create(
             title="Тестовая группа",
             slug="test_slug",
             description="Тестовое описание",
         )
+
         cls.post = Post.objects.create(
             author=cls.user,
             text="Тестовый пост",
@@ -26,9 +29,7 @@ class PostPageTests(TestCase):
         )
 
     def setUp(self):
-        # Создаем авторизованный клиент
         self.authorized_client = Client()
-        # Авторизуем пользователя
         self.authorized_client.force_login(PostPageTests.user)
 
     # Проверяем используемые шаблоны
@@ -67,15 +68,10 @@ class PostPageTests(TestCase):
                 response = self.authorized_client.get(reverse_name)
                 self.assertTemplateUsed(response, template)
 
-    # Проверяем, что словарь context страницы /index
-    # в первом элементе списка page_obj содержит ожидаемые значения
     def test_index_page_correct_context(self):
         """Шаблон index.html сформирован с правильным контекстом."""
         response = self.authorized_client.get(reverse("posts:index"))
-        # Взяли первый элемент из списка и проверили, что его содержание
-        # совпадает с ожидаемым
         first_object = response.context["page_obj"][0]
-
         self.assertEqual(first_object.group.title, PostPageTests.group.title)
         self.assertEqual(first_object.group.slug, PostPageTests.group.slug)
         self.assertEqual(
@@ -179,8 +175,6 @@ class PostPageTests(TestCase):
         self.post_2.delete()
         self.user_2.delete()
 
-    # Проверяем, что словарь context страницы /post_detail
-    # содержит список постов отфильтрованных по id
     def test_post_detail_page_correct_context(self):
         """Шаблон post_detail.html сформирован с правильным контекстом."""
         response = self.authorized_client.get(
@@ -191,7 +185,6 @@ class PostPageTests(TestCase):
         self.assertEqual(post.group.title, self.group.title)
         self.assertEqual(post.group.slug, self.group.slug)
         self.assertEqual(post.group.description, self.group.description)
-
         self.assertEqual(post.author.username, self.post.author.get_username())
         self.assertEqual(post.text, self.post.text)
 
