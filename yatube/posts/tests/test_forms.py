@@ -34,7 +34,7 @@ class PostCreateFormTests(TestCase):
 
         self.assertEqual(Post.objects.count(), posts_count + 1)
 
-        # Проверяем, что создалась запись с заданным текстом
+        # Создалась ли запись с заданным текстом
         self.assertTrue(
             Post.objects.filter(
                 text=self.post.text * 2,
@@ -48,16 +48,14 @@ class PostCreateFormTests(TestCase):
             "goup": self.group,
         }
 
-        # Подсчитаем количество записей в Post
-        posts_count = Post.objects.count()
         # Отправляем POST-запрос
         self.authorized_client.post(
             reverse("posts:post_edit", kwargs={"post_id": self.post.id}),
             data=form_data,
             follow=True,
         )
-        # # Осталось ли число постов прежним
-        self.assertEqual(Post.objects.count(), posts_count)
+        # Осталось ли число постов прежним
+        self.assertEqual(Post.objects.count(), 1)
 
         # Создалась ли запись с заданным текстом
         self.assertTrue(
