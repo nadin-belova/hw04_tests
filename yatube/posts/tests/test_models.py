@@ -7,26 +7,12 @@ User = get_user_model()
 
 
 class PostModelTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.user = User.objects.create_user("auth")
-        cls.group = Group.objects.create(
-            title="группа",
-            slug="slug",
-            description="описание",
-        )
-        cls.post = Post.objects.create(
-            author=cls.user,
-            text="пост",
-        )
-
     def test_models_have_correct_object_names(self):
         """У моделей корректно работает __str__."""
-        group = PostModelTest.group
-        group_str = group.__str__()
-        self.assertEqual(group_str, group.title)
 
-        post = PostModelTest.post
-        post_str = post.__str__()
-        self.assertEqual(post_str, post.text[:15] + "...")
+        user = User.objects.create_user("auth")
+        group = Group.objects.create(slug="slug")
+        post = Post.objects.create(author=user)
+
+        self.assertEqual(group.__str__(), group.title)
+        self.assertEqual(post.__str__(), post.text[:15] + "...")
