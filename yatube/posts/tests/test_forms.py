@@ -56,10 +56,10 @@ class PostCreateFormTests(TestCase):
             data=form_data,
             follow=True,
         )
-        # # Проверяем, осталось ли число постов прежним
+        # # Осталось ли число постов прежним
         self.assertEqual(Post.objects.count(), posts_count)
 
-        # Проверяем, что создалась запись с заданным текстом
+        # Создалась ли запись с заданным текстом
         self.assertTrue(
             Post.objects.filter(
                 text=self.post.text * 3,

@@ -31,7 +31,7 @@ class PostPageTests(TestCase):
         self.authorized_client.force_login(PostPageTests.user)
 
     def test_page_authorized_uses_correct_template(self):
-        """Проверка корректности адреса 'name' функции path() и формируемой по
+        """Корректен ли адрес 'name' функции path() и формируемой по
         этому адресу странице html"""
 
         urls = [
@@ -73,7 +73,7 @@ class PostPageTests(TestCase):
         )
         self.assertEqual(first_object.text, PostPageTests.post.text)
 
-    # Проверяем, что словарь context страницы /group_list
+    # Словарь context страницы /group_list
     # содержит список постов отфильтрованных по группе
     def test_group_list_page_correct_context(self):
         """Шаблон group_list.html сформирован с правильным контекстом."""
@@ -118,7 +118,7 @@ class PostPageTests(TestCase):
         self.post_2.delete()
         self.group_2.delete()
 
-    # Проверяем, что словарь context страницы /profile
+    # Словарь context страницы /profile
     # содержит список постов отфильтрованных по пользователю
     def test_profile_page_correct_context(self):
         """Шаблон profile.html сформирован с правильным контекстом."""
@@ -180,7 +180,7 @@ class PostPageTests(TestCase):
         count = response.context["post_count"]
         self.assertEqual(count, 1)
 
-    # Проверяем, что словарь context страницы /create_post
+    # Словарь context страницы /create_post
     # содержит форму редактирования поста отфильтрованного по id
     def test_edit_post_page_correct_context(self):
         """Шаблон create_post.html сформирован с правильным контекстом."""
@@ -197,7 +197,7 @@ class PostPageTests(TestCase):
         post_id = response.context["post_id"]
         self.assertEqual(post_id, 1)
 
-    # Проверяем, что словарь context страницы /create_post
+    # Словарь context страницы /create_post
     # содержит форму создания поста
     def test_create_post_page_correct_context(self):
         """Шаблон create_post.html сформирован с правильным контекстом."""
