@@ -14,15 +14,8 @@ class PostURLTests(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = User.objects.create_user("auth")
-        cls.group = Group.objects.create(
-            title="группа",
-            slug="slug",
-            description="описание",
-        )
-        cls.post = Post.objects.create(
-            author=cls.user,
-            text="пост",
-        )
+        cls.group = Group.objects.create(slug="slug")
+        cls.post = Post.objects.create(author=cls.user)
 
     def setUp(self):
         self.user = User.objects.create_user(username="HasNoName")
