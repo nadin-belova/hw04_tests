@@ -40,7 +40,7 @@ class PostPageTests(TestCase):
             reverse('posts:profile', kwargs={'username': self.user.username}),
             reverse('posts:post_detail', kwargs={'post_id': self.post.id}),
             reverse('posts:post_edit', kwargs={'post_id': self.post.id}),
-            reverse('posts:post_create'),
+            reverse('posts:create_post'),
         ]
 
         templates = [
