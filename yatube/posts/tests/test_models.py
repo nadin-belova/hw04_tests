@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
-from ..models import Group, Post
+from ..models import Post
 
 User = get_user_model()
 
@@ -11,8 +11,15 @@ class PostModelTest(TestCase):
         """У моделей корректно работает __str__."""
 
         user = User.objects.create_user("auth")
-        group = Group.objects.create(slug="slug")
-        post = Post.objects.create(author=user)
 
-        self.assertEqual(group.__str__(), group.title)
-        self.assertEqual(post.__str__(), post.text[:15] + "...")
+        short_post = Post.objects.create(
+            author=user,
+            text='Короткий пост',
+        )
+        self.assertEqual(str(short_post), 'Короткий пост...')
+
+        long_post = Post.objects.create(
+            author=user,
+            text='Не более 15 символов может уместиться в превью',
+        )
+        self.assertEqual(str(long_post), "Не более 15 сим...")
