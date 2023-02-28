@@ -24,3 +24,4 @@ urlpatterns = [
     path("about/", include("about.urls", namespace="about")),
     # path('__debug__/', include('debug_toolbar.urls')),  # delete this.RGenius
 ]
+handler404 = 'core.views.page_not_found'
