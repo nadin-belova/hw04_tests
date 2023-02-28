@@ -10,23 +10,20 @@ User = get_user_model()
 
 
 class PostPageTests(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.user = User.objects.create_user("auth")
-        cls.group = Group.objects.create(
+    def setUp(self):
+        self.user = User.objects.create_user("auth")
+        self.group = Group.objects.create(
             title="группа",
             slug="slug",
             description="описание",
         )
 
-        cls.post = Post.objects.create(
-            author=cls.user,
+        self.post = Post.objects.create(
+            author=self.user,
             text="пост",
-            group=cls.group,
+            group=self.group,
         )
 
-    def setUp(self):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
