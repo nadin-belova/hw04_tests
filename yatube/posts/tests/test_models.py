@@ -8,7 +8,9 @@ User = get_user_model()
 
 class PostModelTest(TestCase):
     def test_models_have_correct_object_names(self):
-        """У моделей корректно работает __str__."""
+        """
+        У моделей метод __str__ выводит первые 15 символов.
+        """
 
         user = User.objects.create_user("auth")
 

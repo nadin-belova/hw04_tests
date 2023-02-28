@@ -58,7 +58,10 @@ class PostPageTests(TestCase):
                 self.assertTemplateUsed(response, template)
 
     def test_index_page_correct_context(self):
-        """Шаблон index.html сформирован с правильным контекстом."""
+        """
+        На главной странице пользователь __точно__
+        увидит единственный пост (создаём в "setUpClass").
+        """
         response = self.authorized_client.get(reverse("posts:index"))
         first_object = response.context["page_obj"][0]
         self.assertEqual(first_object.group.title, self.group.title)
@@ -73,10 +76,11 @@ class PostPageTests(TestCase):
         )
         self.assertEqual(first_object.text, self.post.text)
 
-    # Словарь context страницы /group_list
-    # содержит список постов отфильтрованных по группе
     def test_group_list_page_correct_context(self):
-        """Шаблон group_list.html сформирован с правильным контекстом."""
+        """
+        Context страницы /group_list содержит список постов
+        отфильтрованных по группе
+        """
         response = self.authorized_client.get(
             reverse("posts:group_list", kwargs={"slug": self.group.slug})
         )
@@ -118,10 +122,11 @@ class PostPageTests(TestCase):
         self.post_2.delete()
         self.group_2.delete()
 
-    # Словарь context страницы /profile
-    # содержит список постов отфильтрованных по пользователю
     def test_profile_page_correct_context(self):
-        """Шаблон profile.html сформирован с правильным контекстом."""
+        """
+        Context страницы /profile содержит список постов
+        отфильтрованных по пользователю
+        """
         response = self.authorized_client.get(
             reverse(
                 "posts:profile",
@@ -165,7 +170,10 @@ class PostPageTests(TestCase):
         self.user_2.delete()
 
     def test_post_detail_page_correct_context(self):
-        """Шаблон post_detail.html сформирован с правильным контекстом."""
+        """
+        Context страницы /post_detail содержит один пост
+        отфильтрованный по id
+        """
         response = self.authorized_client.get(
             reverse("posts:post_detail", kwargs={"post_id": self.post.id})
         )
@@ -180,10 +188,11 @@ class PostPageTests(TestCase):
         count = response.context["post_count"]
         self.assertEqual(count, 1)
 
-    # Словарь context страницы /create_post
-    # содержит форму редактирования поста отфильтрованного по id
     def test_edit_post_page_correct_context(self):
-        """Шаблон create_post.html сформирован с правильным контекстом."""
+        """
+        Context страницы /create_post
+        содержит форму редактирования поста отфильтрованного по id
+        """
         response = self.authorized_client.get(
             reverse("posts:post_edit", kwargs={"post_id": self.post.id})
         )
@@ -197,10 +206,10 @@ class PostPageTests(TestCase):
         post_id = response.context["post_id"]
         self.assertEqual(post_id, 1)
 
-    # Словарь context страницы /create_post
-    # содержит форму создания поста
     def test_create_post_page_correct_context(self):
-        """Шаблон create_post.html сформирован с правильным контекстом."""
+        """
+        Context страницы /create_post содержит форму создания поста
+        """
         response = self.authorized_client.get(reverse("posts:create_post"))
 
         form = response.context["form"]
