@@ -116,9 +116,6 @@ class PostPageTests(TestCase):
             self.post_2.text
         )
 
-        self.post_2.delete()
-        self.group_2.delete()
-
     def test_profile_page_contains_posts_filtered_by_user(self):
         """
         Context страницы /profile содержит список постов
@@ -162,9 +159,6 @@ class PostPageTests(TestCase):
             response.context["page_obj"][0].text,
             self.post_2.text
         )
-
-        self.post_2.delete()
-        self.user_2.delete()
 
     def test_post_detail_contains_single_post(self):
         """
