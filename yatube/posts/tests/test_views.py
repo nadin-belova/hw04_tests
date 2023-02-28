@@ -30,7 +30,7 @@ class PostPageTests(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
-    def test_page_authorized_uses_correct_template(self):
+    def test_pages_use_template_by_url_name(self):
         """Корректен ли адрес 'name' функции path() и формируемой по
         этому адресу странице html"""
 
@@ -57,7 +57,7 @@ class PostPageTests(TestCase):
                 response = self.authorized_client.get(url)
                 self.assertTemplateUsed(response, template)
 
-    def test_index_page_correct_context(self):
+    def test_index_page_contains_single_post(self):
         """
         На главной странице пользователь __точно__
         увидит единственный пост (создаём в "setUpClass").
@@ -76,7 +76,7 @@ class PostPageTests(TestCase):
         )
         self.assertEqual(first_object.text, self.post.text)
 
-    def test_group_list_page_correct_context(self):
+    def test_group_list_contains_posts_filtered_by_group(self):
         """
         Context страницы /group_list содержит список постов
         отфильтрованных по группе
@@ -122,7 +122,7 @@ class PostPageTests(TestCase):
         self.post_2.delete()
         self.group_2.delete()
 
-    def test_profile_page_correct_context(self):
+    def test_profile_page_contains_posts_filtered_by_user(self):
         """
         Context страницы /profile содержит список постов
         отфильтрованных по пользователю
@@ -169,7 +169,7 @@ class PostPageTests(TestCase):
         self.post_2.delete()
         self.user_2.delete()
 
-    def test_post_detail_page_correct_context(self):
+    def test_post_detail_contains_single_post(self):
         """
         Context страницы /post_detail содержит один пост
         отфильтрованный по id
@@ -188,7 +188,7 @@ class PostPageTests(TestCase):
         count = response.context["post_count"]
         self.assertEqual(count, 1)
 
-    def test_edit_post_page_correct_context(self):
+    def test_edit_post_page_contains_edit_post_form(self):
         """
         Context страницы /create_post
         содержит форму редактирования поста отфильтрованного по id
@@ -206,7 +206,7 @@ class PostPageTests(TestCase):
         post_id = response.context["post_id"]
         self.assertEqual(post_id, 1)
 
-    def test_create_post_page_correct_context(self):
+    def test_create_post_page_contains_create_post_form(self):
         """
         Context страницы /create_post содержит форму создания поста
         """
