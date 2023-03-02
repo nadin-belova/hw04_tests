@@ -272,10 +272,14 @@ class PaginatorViewsTest(TestCase):
 class ImagePostPageTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user("auth")
+        self.group = Group.objects.create(
+            slug="slug",
+        )
         uploaded = SimpleUploadedFile(name='', content='')
 
         self.post = Post.objects.create(
             author=self.user,
+            group=self.group,
             image=uploaded,
         )
 
@@ -302,6 +306,18 @@ class ImagePostPageTests(TestCase):
                 "posts:profile",
                 kwargs={"username": self.user.get_username()}
             ))
+        first_object = response.context["page_obj"][0]
+
+        self.assertEqual(first_object.image, self.post.image)
+
+    def test_group_list_page_contains_single_post_with_image(self):
+        """
+        На странице группы пользователь __точно__
+        увидит единственный пост с картинкой (создаём в setUp).
+        """
+        response = self.authorized_client.get(
+            reverse("posts:group_list", kwargs={"slug": self.group.slug})
+        )
         first_object = response.context["page_obj"][0]
 
         self.assertEqual(first_object.image, self.post.image)
