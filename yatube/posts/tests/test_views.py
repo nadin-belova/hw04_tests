@@ -321,3 +321,15 @@ class ImagePostPageTests(TestCase):
         first_object = response.context["page_obj"][0]
 
         self.assertEqual(first_object.image, self.post.image)
+
+    def test_post_detail_page_contains_single_post_with_image(self):
+        """
+        На странице поста пользователь __точно__
+        увидит единственный пост с картинкой (создаём в setUp).
+        """
+        response = self.authorized_client.get(
+            reverse("posts:post_detail", kwargs={"post_id": self.post.id})
+        )
+        post = response.context["post"]
+
+        self.assertEqual(post.image, self.post.image)
