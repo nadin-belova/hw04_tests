@@ -1,4 +1,7 @@
+
+
 <header>
+    
   {% load static %}
   <nav class="navbar navbar-light" style="background-color: lightskyblue;">
       <div class="container">
@@ -17,7 +20,6 @@
                   <a class="nav-link" href="{% url 'about:tech' %}">Технологии</a>
               </li>
               {% if user.is_authenticated %}
-
               <li class="nav-item">
                   {% comment %} href="{% url 'posts:create_post' %} {% endcomment %}
                   <a class="nav-link" href="{% url 'posts:create_post' %}"> Новая запись </a>
