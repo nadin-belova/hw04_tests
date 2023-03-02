@@ -12,7 +12,7 @@
 
 <!-- Пример использования тега для пропорционального уменьшения и обрезки -->
 <!-- картинки до размера 100x100px с центрированием -->
-{% thumbnail item.image "100x100" crop="center" as im %}
+{% thumbnail post.image "100x100" crop="center" as im %}
   <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
 {% endthumbnail %} 
 <p>{{ post.text}}</p>
