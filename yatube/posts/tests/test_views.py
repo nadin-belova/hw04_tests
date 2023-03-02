@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from ..forms import PostForm
 
@@ -57,7 +58,7 @@ class PostPageTests(TestCase):
     def test_index_page_contains_single_post(self):
         """
         На главной странице пользователь __точно__
-        увидит единственный пост (создаём в "setUpClass").
+        увидит единственный пост (создаём в "setUp").
         """
         response = self.authorized_client.get(reverse("posts:index"))
         first_object = response.context["page_obj"][0]
@@ -205,6 +206,19 @@ class PostPageTests(TestCase):
 
         form = response.context["form"]
         self.assertIsInstance(form, PostForm)
+
+    def test_index_page_contains_single_post_with_image(self):
+        """
+        На главной странице пользователь __точно__
+        увидит единственный пост с картинкой.
+        """
+        uploaded = SimpleUploadedFile(name='', content='')
+        post = Post.objects.create(author=self.user, image=uploaded)
+
+        response = self.authorized_client.get(reverse("posts:index"))
+        first_object = response.context["page_obj"][0]
+
+        self.assertEqual(first_object.image, post.image)
 
 
 class PaginatorViewsTest(TestCase):
