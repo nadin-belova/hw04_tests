@@ -207,19 +207,6 @@ class PostPageTests(TestCase):
         form = response.context["form"]
         self.assertIsInstance(form, PostForm)
 
-    def test_index_page_contains_single_post_with_image(self):
-        """
-        На главной странице пользователь __точно__
-        увидит единственный пост с картинкой.
-        """
-        uploaded = SimpleUploadedFile(name='', content='')
-        post = Post.objects.create(author=self.user, image=uploaded)
-
-        response = self.authorized_client.get(reverse("posts:index"))
-        first_object = response.context["page_obj"][0]
-
-        self.assertEqual(first_object.image, post.image)
-
 
 class PaginatorViewsTest(TestCase):
     ALL_POSTS_COUNT = 12
@@ -280,3 +267,34 @@ class PaginatorViewsTest(TestCase):
         self.__test_paginator(
             "posts:profile", kwargs={"username": self.user.get_username()}
         )
+
+
+class ImagePostPageTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user("auth")
+        self.group = Group.objects.create(
+            title="группа",
+            slug="slug",
+            description="описание",
+        )
+
+        uploaded = SimpleUploadedFile(name='', content='')
+        self.post = Post.objects.create(
+            author=self.user,
+            text="пост",
+            group=self.group,
+            image=uploaded,
+        )
+
+        self.authorized_client = Client()
+        self.authorized_client.force_login(self.user)
+
+    def test_index_page_contains_single_post_with_image(self):
+        """
+        На главной странице пользователь __точно__
+        увидит единственный пост с картинкой.
+        """
+        response = self.authorized_client.get(reverse("posts:index"))
+        first_object = response.context["page_obj"][0]
+
+        self.assertEqual(first_object.image, self.post.image)
